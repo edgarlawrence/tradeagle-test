@@ -1,0 +1,2 @@
+1. please add the .env file
+2. add this on the env URL_POST="http://64.227.166.246/1234/api/company/signup/"
