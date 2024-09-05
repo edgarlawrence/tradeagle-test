@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import Show from '../../assets/view.png'
 import Hide from '../../assets/hide.png'
+import axios from "axios"
 
 export default function Register({ navigation }) {
   const [name, setName] = React.useState('');
@@ -99,28 +100,49 @@ export default function Register({ navigation }) {
   const CloseModalHandler = () => {
     setModalVisible(false)
 
-    if(resFinish === true) {
+    if (resFinish === true) {
       navigation.navigate('Home');
     }
   }
 
-  const SubmitHandler = () => {
+  const SubmitHandler = async () => {
     setLoading(true)
+
     if (isSelected === true) {
-      PostAPI(data)
-        .then(res => {
-          setLoading(false)
-          setModalVisible(true);
-          setResultContent('Data Has Been Register Successfully'); 
-          setResFinish(true);
-        })
-        .catch(err => {
-          setLoading(false)
-          setModalVisible(true);
-          console.log(err);
-          setResultContent(err.message);
-          setResFinish(false)
-        });
+      try {
+        await axios.post('http://64.227.166.246/1234/api/company/signup/', {
+          name: name,
+          email: email,
+          contact_number: number,
+          whatsapp_number: waNumber,
+          address: address,
+          city: city,
+          state: state,
+          pin_code: postalCode,
+          pan: pan,
+          gst_no: gst,
+          password: password
+        },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          })
+          .then(res => {
+            setLoading(false)
+            setModalVisible(true);
+            console.log('res', res)
+            setResultContent('Data Has Been Register Successfully');
+            setResFinish(true);
+          })
+      }
+      catch (err) {
+        setLoading(false)
+        setModalVisible(true);
+        console.log(err);
+        setResultContent(err.message);
+        setResFinish(false)
+      };
     } else {
       setModalVisible(true);
       setLoading(false)
